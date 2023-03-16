@@ -6,6 +6,6 @@
 //
 
 import Foundation
-
+// untuk run program
 runprogram()
 

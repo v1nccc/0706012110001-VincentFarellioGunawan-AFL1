@@ -7,8 +7,10 @@
 
 import Foundation
 
-// untuk mendaftar menu
+// untuk menu ketika ada di cart
 var cartchoice = ""
+
+// variabel makanans untuk menampung menu yang ada pada toko2, dalam bentuk arratm dimana dalam array itu terdapat array lagi (index 0 untuk amdam liy, dst), array yang di dalam berisi kumpulan tuple dari menu makanan
 var makanans = [
     [("Ayam Geprek",25000),("Ayam Goreng",30000),("Nasi Sayur",23000),("Nasi Goreng",27000),("Mie Goreng",26000)],
     [("Soto Ayam",21000),("Rawon",23000),("Nasi Campur",29000),("Indomie Sosis Telur",15000),("Sop Ayam",24000)],
@@ -16,12 +18,13 @@ var makanans = [
     [("Air Mineral",5000),("Cheetos",15000),("Pop Mie",9000),("Tahu Isi",12000),("Oreo",5000)]
 ]
 
-// untuk masuk
+// cart makanans untuk menampung pesanan yang ada pada keranjang user, dalam bentuk array dimana dalam array itu terdapat array lagi (index 0 untuk amdam liy, dst), array yang di dalam berisi kumpulan tuple dari pesanan per toko
 var cart: [[(String, Int, Int)]] = [[],[],[],[]]
 
-//total 3 array
+// function utama untuk run program
 func runprogram(){
     var choice: String
+    // repeat ini untuk melooping seluruh program, dimana hanya akan break jika user memilih quit
     repeat {
     print("Welcome to UC Walk Cafetaria")
     print("Please Choose Cafetaria:")
@@ -41,6 +44,7 @@ choice = readLine()!
     
     if (choice == "1") {
         print("Hi! Welcome to Madam Liy" )
+        //memanggil function
         instore(choice: 1)
     }
     else if (choice == "2") {
@@ -56,17 +60,22 @@ choice = readLine()!
         instore(choice: 4)
       }
         else if (choice.lowercased() == "s") {
+            //loop untuk shopping cart
             repeat{
             print("\nHi! Welcome to Shopping cart")
+                // untuk mengecek apakah ada benda di shopping cart
             if(cart[0].isEmpty && cart[1].isEmpty && cart[2].isEmpty && cart[0].isEmpty){
                 print("\n!!! You haven't bought anything yet !!!")
             }
             else{
                 var totalpayment = 0
+                
+                // jika cart index 0 (madam liy ada isinya, lakukan print isinya), ini dilakukan untuk setiap array dalam cart
                 if(!cart[0].isEmpty)
                 {
                     print("Madam Liy:")
                     var a = 1
+                    // print setiap isi daeri cart di toko itu
                     for pesan in cart[0]{
                         print(a , ". " , pesan.0, " | Jumlah: " , pesan.1 , " | Total Harga: " , pesan.2)
                         totalpayment += pesan.2
@@ -100,7 +109,9 @@ choice = readLine()!
                         totalpayment += pesan.2
                         a += 1
                     }}
+                //chice untuk memilih action selanjutnya
                 var choice: String
+                //loop untuk menu cart mengatasi input yang salah
                 repeat{
                     print("\n Total pembayaran yang harus dilakukan:" , totalpayment)
                     print("Press [P] to pay")
@@ -108,6 +119,7 @@ choice = readLine()!
                     print("Your choice? " , terminator: "")
                      cartchoice = ""
                     choice = readLine()!
+                    //jika pilih back, cartchoice dijadikan return supaya keluar dari loop untuk stay dimenu cartchoice
                     if (choice.lowercased() == "b"){
                         cartchoice = "return"
                         break
@@ -123,6 +135,7 @@ choice = readLine()!
                 
                 if (choice.lowercased() == "p"){
                 var done = false
+                    //loop untuk membayar supaya akan sesuai
                 repeat{
                     print("Enter the amount of yout money:", terminator: "")
                     let paymoney = readLine()
@@ -139,6 +152,7 @@ choice = readLine()!
                         
                         else{
                             print("Transaksi Berhasil!")
+                            //jika berhasil, carti dikosongkan
                             cart[0].removeAll()
                             cart[1].removeAll()
                             cart[2].removeAll()
@@ -171,9 +185,12 @@ choice = readLine()!
     
 }
 
+    // function buat ketika user memilih toko dan bertransaksi
 public func instore(choice:Int){
+    // variabel udahkeadd untuk digunakan di codition nanti ketika memn entukan apakah transaksi berhasil dilakukan
     var udahkeadd = false
     var foodchoice: String?
+    // loop untuk stay dalam menu memilih makanan di store
     repeat{
         var i = 1
         for food in makanans[choice-1]{
@@ -188,15 +205,19 @@ public func instore(choice:Int){
                 if(foodchoice > 0 && foodchoice < 6){
                 var total = 0
                 var how_manyfood = 0
+                    
+                // udahpilihbrp digunakan untuk ketika sudah memilih diberikan true supaya tidak loop terus
                 var udahpilihbrp = false
+                    //loop untuk handling input supaya sesuai ketika memilih jumlah pesanan
                     repeat{
                         print("How Many Food do you want?: ", terminator: " ")
-                        var how_manyfoodd = readLine()!
+                        let how_manyfoodd = readLine()!
                         if let how_manyfoodd = Int(how_manyfoodd){
                             if(how_manyfoodd < 1){
                                 print("Input Jumlah yang benar!")
                             }
                             else{
+                                
                                 total = (makanans[Int(exactly: choice)!-1][Int(exactly: foodchoice)!-1].1)*(how_manyfoodd)
                                 how_manyfood = how_manyfoodd
                                 udahpilihbrp =  true
@@ -208,14 +229,18 @@ public func instore(choice:Int){
                     }while(!udahpilihbrp)
                 
                 var yorn = ""
+                    // loop untuk konfirmasi pesanan agar sesuai inputnya
                     repeat{
                         print("You will spend: ", total)
                         print("Proceed? (Y/N): ", terminator: "")
                         yorn = readLine()!
                         if(yorn.lowercased() == "y"){
+                    //kondisi jika susah ada transaksi di toko itu dan membeli
                     if(!cart[choice-1].isEmpty){
+                        //jika cart toko itu ada isi, maka diperiksa apakah ada menu yang sama
                         for i in 0...cart[choice-1].count-1 {
                             if(cart[choice-1][i].0 == makanans[Int(exactly: choice)!-1][Int(exactly: foodchoice)!-1].0){
+                                //jika ada yang sama, yang dilakukan adalah dengan menmabah jumlah dan subtotal nya
                                 cart[choice-1][i].1 += how_manyfood
                                 cart[choice-1][i].2 += total
                                 udahkeadd = true
@@ -227,6 +252,7 @@ public func instore(choice:Int){
                     }
                     print("Berhasil Ditambahkan ke keranjang!")
                 }
+                        // jika input n maka cancel 
                         else if(yorn.lowercased() == "n"){
                     print("Pesanan dibatalkan")
                 }
